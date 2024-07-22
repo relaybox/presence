@@ -9,6 +9,8 @@ import { getLogger } from '../util/logger.util';
 
 const logger = getLogger('redis');
 
+// Force
+
 interface RedisOptions {
   host: string;
   port: number;
