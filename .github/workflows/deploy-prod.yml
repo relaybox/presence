@@ -57,6 +57,7 @@ jobs:
           DB_MAX_CONNECTIONS: ${{ vars.DB_MAX_CONNECTIONS }}
           DB_USERNAME: ${{ vars.DB_USERNAME }}
           RABBIT_MQ_CONNECTION_STRING: ${{ vars.RABBIT_MQ_CONNECTION_STRING }}
+          RABBIT_MQ_QUEUE_COUNT: ${{ vars.RABBIT_MQ_QUEUE_COUNT }}
           REDIS_HOST: ${{ vars.REDIS_HOST }}
           REDIS_PORT: ${{ vars.REDIS_PORT }}
           DB_PASSWORD_ARN: ${{ vars.DB_PASSWORD_ARN }}
