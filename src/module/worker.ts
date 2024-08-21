@@ -1,14 +1,14 @@
 import { Job, Worker } from 'bullmq';
 import { getLogger } from '../util/logger.util';
 import { route } from './router';
-import { cleanupRedisClient, connectionOptionsIo, getRedisClient } from '../lib/redis';
+import { connectionOptionsIo, getRedisClient } from '../lib/redis';
 
 const QUEUE_NAME = 'presence';
 
 const logger = getLogger(QUEUE_NAME);
 const redisClient = getRedisClient();
 
-let worker: Worker | null;
+let worker: Worker | null = null;
 
 async function initializeConnections(): Promise<void> {
   if (!redisClient) {
