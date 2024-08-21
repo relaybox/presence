@@ -46,11 +46,11 @@ export async function startWorker() {
   });
 
   worker.on('ready', () => {
-    logger.info(`Session worker ready`);
+    logger.info(`Presence worker ready`);
   });
 
   worker.on('active', () => {
-    logger.info(`Session worker active`);
+    logger.info(`Presence worker active`);
   });
 }
 
