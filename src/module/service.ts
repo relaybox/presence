@@ -13,12 +13,17 @@ export async function processAddActiveMember(
 
   const keyPrefix = formatKey([KeyPrefix.PRESENCE, nspRoomId]);
 
+  const messageData = {
+    ...message,
+    user: session.user
+  };
+
   try {
     await repository.addActiveMember(
       redisClient,
       `${keyPrefix}:${KeySuffix.MEMBERS}`,
       clientId,
-      JSON.stringify(message)
+      JSON.stringify(messageData)
     );
 
     await repository.pushActiveMember(redisClient, `${keyPrefix}:${KeySuffix.INDEX}`, clientId);
@@ -58,7 +63,12 @@ export async function processUpdateActiveMember(
   const key = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
 
   try {
-    await repository.updateActiveMember(redisClient, key, clientId, JSON.stringify(message));
+    const messageData = {
+      ...message,
+      user: session.user
+    };
+
+    await repository.updateActiveMember(redisClient, key, clientId, JSON.stringify(messageData));
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
   } catch (err) {
