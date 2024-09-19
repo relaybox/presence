@@ -34,7 +34,7 @@ jobs:
       cluster-name: core-services
       service-name: presence
       cluster-suffix: 9pkS9BJE3t40
-      service-suffix: HcnXKEogkl4w
+      service-suffix: g4yUwU9uAHUV
     secrets: inherit
 
   publish-multi-platform-image:
