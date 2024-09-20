@@ -6,6 +6,8 @@ import { cleanupRedisClient } from './lib/redis';
 
 const logger = getLogger('presence-service');
 
+// FORCE DEPLOY v1
+
 startWorker();
 
 async function shutdown(signal: string): Promise<void> {
