@@ -14,19 +14,15 @@ export function route<T>(
   jobName: string,
   data: T
 ): Promise<void> | undefined {
-  try {
-    switch (jobName) {
-      case JobName.PRESENCE_JOIN:
-        return addActiveMember(logger, redisClient, data);
+  switch (jobName) {
+    case JobName.PRESENCE_JOIN:
+      return addActiveMember(logger, redisClient, data);
 
-      case JobName.PRESENCE_LEAVE:
-        return removeActiveMember(logger, redisClient, data);
+    case JobName.PRESENCE_LEAVE:
+      return removeActiveMember(logger, redisClient, data);
 
-      case JobName.PRESENCE_UPDATE:
-        return updateActiveMember(logger, redisClient, data);
-    }
-  } catch (err) {
-    logger.error(`Routed request failed`, { err, jobName });
+    case JobName.PRESENCE_UPDATE:
+      return updateActiveMember(logger, redisClient, data);
   }
 }
 

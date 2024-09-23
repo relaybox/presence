@@ -30,7 +30,7 @@ async function handler({ id, name, data }: Job) {
 
   logger.info(`Processing job ${id} (${name})`, { data });
 
-  await route(logger, redisClient, name, data);
+  return route(logger, redisClient, name, data);
 }
 
 export async function startWorker() {
