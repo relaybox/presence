@@ -1,12 +1,10 @@
 import 'dotenv/config';
 
-import { startWorker, stopWorker } from './module/worker';
-import { getLogger } from './util/logger.util';
-import { cleanupRedisClient } from './lib/redis';
+import { startWorker, stopWorker } from '@/module/worker';
+import { getLogger } from '@/util/logger.util';
+import { cleanupRedisClient } from '@/lib/redis';
 
 const logger = getLogger('presence-service');
-
-// FORCE DEPLOY v1
 
 startWorker();
 

@@ -1,4 +1,4 @@
-import { RedisClient } from '../lib/redis';
+import { RedisClient } from '@/lib/redis';
 
 export async function addActiveMember(
   redisClient: RedisClient,

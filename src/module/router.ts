@@ -1,10 +1,6 @@
 import { Logger } from 'winston';
-import {
-  processAddActiveMember,
-  processRemoveActiveMember,
-  processUpdateActiveMember
-} from './service';
-import { RedisClient } from '../lib/redis';
+import { addActiveMember, removeActiveMember, updateActiveMember } from './service';
+import { RedisClient } from '@/lib/redis';
 
 enum JobName {
   PRESENCE_JOIN = 'presence:join',
@@ -21,13 +17,13 @@ export function route<T>(
   try {
     switch (jobName) {
       case JobName.PRESENCE_JOIN:
-        return processAddActiveMember(logger, redisClient, data);
+        return addActiveMember(logger, redisClient, data);
 
       case JobName.PRESENCE_LEAVE:
-        return processRemoveActiveMember(logger, redisClient, data);
+        return removeActiveMember(logger, redisClient, data);
 
       case JobName.PRESENCE_UPDATE:
-        return processUpdateActiveMember(logger, redisClient, data);
+        return updateActiveMember(logger, redisClient, data);
     }
   } catch (err) {
     logger.error(`Routed request failed`, { err, jobName });

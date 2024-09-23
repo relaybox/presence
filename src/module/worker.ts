@@ -1,7 +1,7 @@
 import { Job, Worker } from 'bullmq';
-import { getLogger } from '../util/logger.util';
+import { getLogger } from '@/util/logger.util';
 import { route } from './router';
-import { connectionOptionsIo, getRedisClient } from '../lib/redis';
+import { connectionOptionsIo, getRedisClient } from '@/lib/redis';
 
 const QUEUE_NAME = 'presence';
 

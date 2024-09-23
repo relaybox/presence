@@ -1,10 +1,14 @@
 import { Logger } from 'winston';
-import { dispatch } from '../lib/publisher';
+import { dispatch } from '@/lib/publisher';
 import * as repository from './repository';
 import { KeyPrefix, KeySuffix } from './types';
-import { RedisClient } from '../lib/redis';
+import { RedisClient } from '@/lib/redis';
 
-export async function processAddActiveMember(
+export function formatKey(keyParts: string[]): string {
+  return keyParts.join(':');
+}
+
+export async function addActiveMember(
   logger: Logger,
   redisClient: RedisClient,
   data: any
@@ -34,7 +38,7 @@ export async function processAddActiveMember(
   }
 }
 
-export async function processRemoveActiveMember(
+export async function removeActiveMember(
   logger: Logger,
   redisClient: RedisClient,
   data: any
@@ -53,7 +57,7 @@ export async function processRemoveActiveMember(
   }
 }
 
-export async function processUpdateActiveMember(
+export async function updateActiveMember(
   logger: Logger,
   redisClient: RedisClient,
   data: any
@@ -74,8 +78,4 @@ export async function processUpdateActiveMember(
   } catch (err) {
     logger.error(`Failed to update active presence member`, { clientId, err });
   }
-}
-
-function formatKey(keyParts: string[]): string {
-  return keyParts.join(':');
 }
