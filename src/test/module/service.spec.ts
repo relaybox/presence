@@ -8,6 +8,7 @@ import {
   updateActiveMember
 } from '@/module/service';
 import { KeyPrefix, KeySuffix } from '@/module/types';
+import { RedisClient } from '@/lib/redis';
 
 const logger = getLogger('session-service');
 
@@ -28,7 +29,7 @@ const mockPublisher = vi.hoisted(() => ({
 vi.mock('@/lib/publisher', () => mockPublisher);
 
 describe('service', () => {
-  const mockredisClient = {} as any;
+  const mockRedisClient = {} as RedisClient;
 
   afterEach(() => {
     vi.resetAllMocks();
@@ -47,16 +48,16 @@ describe('service', () => {
         user: session.user
       };
 
-      await addActiveMember(logger, mockredisClient, messageData);
+      await addActiveMember(logger, mockRedisClient, messageData);
 
       expect(mockRepository.addActiveMember).toHaveBeenCalledWith(
-        mockredisClient,
+        mockRedisClient,
         `${addActiveMemberCacheKeyPrefix}:${KeySuffix.MEMBERS}`,
         clientId,
         JSON.stringify(messageUserData)
       );
       expect(mockRepository.pushActiveMember).toHaveBeenCalledWith(
-        mockredisClient,
+        mockRedisClient,
         `${addActiveMemberCacheKeyPrefix}:${KeySuffix.INDEX}`,
         clientId
       );
@@ -78,15 +79,15 @@ describe('service', () => {
 
       const addActiveMemberCacheKeyPrefix = formatKey([KeyPrefix.PRESENCE, messageData.nspRoomId]);
 
-      await removeActiveMember(logger, mockredisClient, messageData);
+      await removeActiveMember(logger, mockRedisClient, messageData);
 
       expect(mockRepository.removeActiveMember).toHaveBeenCalledWith(
-        mockredisClient,
+        mockRedisClient,
         `${addActiveMemberCacheKeyPrefix}:${KeySuffix.MEMBERS}`,
         clientId
       );
       expect(mockRepository.shiftActiveMember).toHaveBeenCalledWith(
-        mockredisClient,
+        mockRedisClient,
         `${addActiveMemberCacheKeyPrefix}:${KeySuffix.INDEX}`,
         clientId
       );
@@ -113,10 +114,10 @@ describe('service', () => {
         user: session.user
       };
 
-      await updateActiveMember(logger, mockredisClient, messageData);
+      await updateActiveMember(logger, mockRedisClient, messageData);
 
       expect(mockRepository.updateActiveMember).toHaveBeenCalledWith(
-        mockredisClient,
+        mockRedisClient,
         `${addActiveMemberCacheKeyPrefix}:${KeySuffix.MEMBERS}`,
         clientId,
         JSON.stringify(messageUserData)
