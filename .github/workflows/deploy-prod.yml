@@ -20,6 +20,7 @@ jobs:
 
   build-application:
     name: Build application
+    needs: test
     uses: ./.github/workflows/build-application.yml
 
   build-push-ecr:
