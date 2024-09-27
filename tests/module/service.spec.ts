@@ -1,4 +1,4 @@
-import { getMockMessageData } from '@/test/__mocks__/internal/message.mock';
+import { getMockMessageData } from '../__mocks__/internal/message.mock';
 import { describe, vi, it, afterEach, expect } from 'vitest';
 import { getLogger } from '@/util/logger.util';
 import {
