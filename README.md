@@ -2,7 +2,7 @@
 
 The presence service is one of four core services that keep the core database up to date with the latest data broadcast by the [uWS](https://github.com/relaybox/uws) Realtime Service.
 
-For more information about RelayBox "presence" and associated functionality please visit the [Presence Documentation](https://docs.relaybox.com/docs/presence).
+For more information about RelayBox "presence" and associated functionality please visit the [Presence Documentation](https://relaybox.net/docs/presence).
 
 ## Getting Started
 
