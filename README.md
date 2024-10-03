@@ -1,4 +1,4 @@
-# Presence - RelayBox Presence Management Service
+# Presence - RelayBox Presence Service
 
 The presence service is one of four core services that keep the core database up to date with the latest data broadcast by the [uWS](https://github.com/relaybox/uws) Realtime Service.
 
@@ -13,7 +13,7 @@ For more information about RelayBox "presence" and associated functionality plea
 
 ### Configuration
 
-Create a copy of `.env.template` in the root of the project and rename it to `.env`. Adjust the configuration settings to matcch you local environment.
+Create a copy of `.env.template` in the root of the project and rename it to `.env`. Adjust the configuration settings to match you local environment.
 
 ### Installation
 
