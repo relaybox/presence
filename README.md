@@ -13,7 +13,7 @@ For more information about RelayBox "presence" and associated functionality plea
 
 ### Configuration
 
-Create a copy of `.env.template` in the root of the project and rename it to `.env`. Adjust the configuration settings to match you local environment.
+Create a copy of `.env.template` in the root of the project and rename it to `.env`. Adjust the configuration settings to match your local environment. Further information about each environment variable can be found in `.env.template`.
 
 ### Installation
 
@@ -31,7 +31,7 @@ npm run dev
 
 ## Testing
 
-The service unit tests can be found in the `./test` directory. Test are run using the `vitest` runner.
+The service unit tests can be found in the `./test` directory. Tests are run using the `vitest` runner.
 
 ```
 npm run test
@@ -47,17 +47,19 @@ Essentially, presence is idenitifiable realtime event transmission for [rooms](h
 
 The Presence service is a Node.js worker triggered by jobs reveived from BullMQ. Jobs are added to the queue in response to events received at the [uWS](https://github.com/relaybox/uws) realtime service.
 
+![RelayBox system diagram, highlight Presence](/assets/system/relaybox-system-presence.png)
+
 The following events and corresponding job data are processed by the service:
 
-### presence:join
+- `presence:join`
 
 Adds a member to a presence set and broadcasts the message to relevant subscribers.
 
-### presence:leave
+- `presence:leave`
 
 Removes a member to from a presence set and broadcasts the message to relevant subscribers.
 
-### presence:update
+- `presence:update`
 
 Updates the user data attached to a member in a presence set and broadcasts the message to relevant subscribers.
 
