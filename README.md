@@ -39,13 +39,13 @@ npm run test
 
 ## About "Presence"
 
-Presence provides a way to provide realtime visiblity about members of a room through "join", "leave" and "update" events. Each event, at a minimum contains meta data about the connection and client that triggered the event. Event data can also be extended to include authenticated user data and arbitrary values attached to each event as desired.
+Presence provides realtime visiblity into members of a room through "join", "leave" and "update" events. Each event, at a minimum contains meta data about the connection and client that triggered the event. Event data can also be extended to include authenticated user data and arbitrary values attached to each event as desired.
 
 Essentially, presence is idenitifiable realtime event transmission for [rooms](https://relaybox.net/docs/rooms).
 
 ## About the service
 
-The Presence service is a Node.js worker triggered by jobs reveived from BullMQ. Jobs are added to the queue in response to events received at the [uWS](https://github.com/relaybox/uws) realtime service.
+The Presence service is a Node.js worker triggered by jobs reveived from BullMQ. Jobs are added to the queue in response to events received by the [uWS](https://github.com/relaybox/uws) realtime service.
 
 ![RelayBox system diagram, highlight Presence](/assets/system/relaybox-system-presence.png)
 
@@ -53,15 +53,15 @@ The following events and corresponding job data are processed by the service:
 
 - `presence:join`
 
-Adds a member to a presence set and broadcasts the message to relevant subscribers.
+Adds a member to a presence set and broadcasts the event to relevant subscribers.
 
 - `presence:leave`
 
-Removes a member to from a presence set and broadcasts the message to relevant subscribers.
+Removes a member to from a presence set and broadcasts the event to relevant subscribers.
 
 - `presence:update`
 
-Updates the user data attached to a member in a presence set and broadcasts the message to relevant subscribers.
+Updates the user data attached to a member in a presence set and broadcasts the event to relevant subscribers.
 
 ### Presence Data
 
