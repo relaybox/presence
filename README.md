@@ -47,7 +47,7 @@ Essentially, presence is idenitifiable realtime event transmission for [rooms](h
 
 The Presence service is a Node.js worker triggered by jobs reveived from BullMQ. Jobs are added to the queue in response to events received by the [Core](https://github.com/relaybox/core) realtime service.
 
-<!-- ![RelayBox system diagram, highlight Presence](/assets/system/relaybox-system-presence.png) -->
+![RelayBox system diagram, highlight Presence](/assets/system/relaybox-system-presence.png)
 
 The following events and corresponding job data are processed by the service:
 
