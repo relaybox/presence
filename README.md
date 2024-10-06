@@ -1,6 +1,6 @@
 # Presence - RelayBox Presence Service
 
-The presence service is one of four core services that keep the core database up to date with the latest data broadcast by the [uWS](https://github.com/relaybox/uws) Realtime Service.
+The presence service is one of four core services that keep the core database up to date with the latest data broadcast by the [Core](https://github.com/relaybox/core) Realtime Service.
 
 For more information about RelayBox "presence" and associated functionality please visit the [Presence Documentation](https://relaybox.net/docs/presence).
 
@@ -45,7 +45,7 @@ Essentially, presence is idenitifiable realtime event transmission for [rooms](h
 
 ## About the service
 
-The Presence service is a Node.js worker triggered by jobs reveived from BullMQ. Jobs are added to the queue in response to events received by the [uWS](https://github.com/relaybox/uws) realtime service.
+The Presence service is a Node.js worker triggered by jobs reveived from BullMQ. Jobs are added to the queue in response to events received by the [Core](https://github.com/relaybox/core) realtime service.
 
 <!-- ![RelayBox system diagram, highlight Presence](/assets/system/relaybox-system-presence.png) -->
 
