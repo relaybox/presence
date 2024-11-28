@@ -17,10 +17,8 @@ export async function addActiveMember(
 
   logger.debug(`Adding active member, ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
 
-  const keyPrefix = formatKey([KeyPrefix.PRESENCE, nspRoomId]);
-  const addActiveMemberKey = formatKey([keyPrefix, KeySuffix.MEMBERS]);
-  const pushActivememberKey = formatKey([keyPrefix, KeySuffix.INDEX]);
-
+  const addActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
+  const pushActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.INDEX]);
   const clientPresenceKey = formatKey([
     KeyPrefix.CLIENT,
     session.appPid,
@@ -41,7 +39,7 @@ export async function addActiveMember(
       JSON.stringify(messageData)
     );
 
-    await repository.pushActiveMember(redisClient, pushActivememberKey, clientId);
+    await repository.pushActiveMember(redisClient, pushActiveMemberKey, clientId);
     await repository.setClientPresenceActive(redisClient, clientPresenceKey, nspRoomId);
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
@@ -59,10 +57,8 @@ export async function removeActiveMember(
 
   logger.debug(`Removing active member ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
 
-  const keyPrefix = formatKey([KeyPrefix.PRESENCE, nspRoomId]);
-  const removeActiveMemberKey = formatKey([keyPrefix, KeySuffix.MEMBERS]);
-  const shiftActivememberKey = formatKey([keyPrefix, KeySuffix.INDEX]);
-
+  const removeActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
+  const shiftActivememberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.INDEX]);
   const clientPresenceKey = formatKey([
     KeyPrefix.CLIENT,
     session.appPid,
