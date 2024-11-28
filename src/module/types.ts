@@ -9,8 +9,7 @@ export enum KeyNameSpace {
 
 export enum KeySuffix {
   INDEX = 'index',
-  MEMBERS = 'members',
-  PRESENCE = 'presence'
+  MEMBERS = 'members'
 }
 
 export interface ReducedSession {

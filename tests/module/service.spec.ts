@@ -17,7 +17,9 @@ const mockRepository = vi.hoisted(() => ({
   pushActiveMember: vi.fn(),
   removeActiveMember: vi.fn(),
   shiftActiveMember: vi.fn(),
-  updateActiveMember: vi.fn()
+  updateActiveMember: vi.fn(),
+  setClientPresenceActive: vi.fn(),
+  unsetClientPresenceActive: vi.fn()
 }));
 
 vi.mock('@/module/repository', () => mockRepository);
