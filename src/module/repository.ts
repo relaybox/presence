@@ -58,3 +58,19 @@ export function unsetClientPresenceActive(
 ): Promise<number> {
   return redisClient.hDel(key, nspRoomId);
 }
+
+export function setConnectionActive(
+  redisClient: RedisClient,
+  key: string,
+  nspRoomId: string
+): Promise<number> {
+  return redisClient.hSet(key, nspRoomId, 1);
+}
+
+export function setConnectionInactive(
+  redisClient: RedisClient,
+  key: string,
+  nspRoomId: string
+): Promise<number> {
+  return redisClient.hDel(key, nspRoomId);
+}

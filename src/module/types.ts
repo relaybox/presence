@@ -1,6 +1,7 @@
 export enum KeyPrefix {
   PRESENCE = 'presence',
-  CLIENT = 'client'
+  CLIENT = 'client',
+  CONNECTION = 'connection'
 }
 
 export enum KeyNameSpace {
@@ -9,7 +10,8 @@ export enum KeyNameSpace {
 
 export enum KeySuffix {
   INDEX = 'index',
-  MEMBERS = 'members'
+  MEMBERS = 'members',
+  PRESENCE_SETS = 'presence-sets'
 }
 
 export interface ReducedSession {
