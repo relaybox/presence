@@ -3,6 +3,10 @@ export enum KeyPrefix {
   CLIENT = 'client'
 }
 
+export enum KeyNameSpace {
+  PRESENCE = 'presence'
+}
+
 export enum KeySuffix {
   INDEX = 'index',
   MEMBERS = 'members',

@@ -1,7 +1,7 @@
 import { Logger } from 'winston';
 import { dispatch } from '@/lib/publisher';
 import * as repository from './repository';
-import { KeyPrefix, KeySuffix } from './types';
+import { KeyNameSpace, KeyPrefix, KeySuffix } from './types';
 import { RedisClient } from '@/lib/redis';
 
 export function formatKey(keyParts: string[]): string {
@@ -25,7 +25,7 @@ export async function addActiveMember(
     KeyPrefix.CLIENT,
     session.appPid,
     clientId,
-    KeySuffix.PRESENCE
+    KeyNameSpace.PRESENCE
   ]);
 
   const messageData = {
@@ -67,7 +67,7 @@ export async function removeActiveMember(
     KeyPrefix.CLIENT,
     session.appPid,
     clientId,
-    KeySuffix.PRESENCE
+    KeyNameSpace.PRESENCE
   ]);
 
   try {
