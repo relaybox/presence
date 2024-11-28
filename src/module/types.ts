@@ -1,10 +1,12 @@
 export enum KeyPrefix {
-  PRESENCE = 'presence'
+  PRESENCE = 'presence',
+  CLIENT = 'client'
 }
 
 export enum KeySuffix {
   INDEX = 'index',
-  MEMBERS = 'members'
+  MEMBERS = 'members',
+  PRESENCE = 'presence'
 }
 
 export interface ReducedSession {

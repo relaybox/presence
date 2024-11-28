@@ -42,3 +42,19 @@ export async function updateActiveMember(
 ): Promise<void> {
   await redisClient.hSet(key, clientId, data);
 }
+
+export function setClientPresenceActive(
+  redisClient: RedisClient,
+  key: string,
+  nspRoomId: string
+): Promise<number> {
+  return redisClient.hSet(key, nspRoomId, 1);
+}
+
+export function unsetClientPresenceActive(
+  redisClient: RedisClient,
+  key: string,
+  nspRoomId: string
+): Promise<number> {
+  return redisClient.hDel(key, nspRoomId);
+}
