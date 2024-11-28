@@ -1,7 +1,7 @@
 import { Logger } from 'winston';
 import { dispatch } from '@/lib/publisher';
 import * as repository from './repository';
-import { KeyPrefix, KeySuffix } from './types';
+import { KeyNameSpace, KeyPrefix, KeySuffix } from './types';
 import { RedisClient } from '@/lib/redis';
 
 export function formatKey(keyParts: string[]): string {
@@ -15,7 +15,16 @@ export async function addActiveMember(
 ): Promise<void> {
   const { clientId, nspRoomId, subscription, session, message, latencyLog } = data;
 
-  const keyPrefix = formatKey([KeyPrefix.PRESENCE, nspRoomId]);
+  logger.debug(`Adding active member, ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
+
+  const addActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
+  const pushActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.INDEX]);
+  const clientPresenceKey = formatKey([
+    KeyPrefix.CLIENT,
+    session.appPid,
+    clientId,
+    KeyNameSpace.PRESENCE
+  ]);
 
   const messageData = {
     ...message,
@@ -25,12 +34,13 @@ export async function addActiveMember(
   try {
     await repository.addActiveMember(
       redisClient,
-      `${keyPrefix}:${KeySuffix.MEMBERS}`,
+      addActiveMemberKey,
       clientId,
       JSON.stringify(messageData)
     );
 
-    await repository.pushActiveMember(redisClient, `${keyPrefix}:${KeySuffix.INDEX}`, clientId);
+    await repository.pushActiveMember(redisClient, pushActiveMemberKey, clientId);
+    await repository.setClientPresenceActive(redisClient, clientPresenceKey, nspRoomId);
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
   } catch (err: any) {
@@ -45,11 +55,21 @@ export async function removeActiveMember(
 ): Promise<void> {
   const { clientId, nspRoomId, subscription, session, message, latencyLog } = data;
 
-  const keyPrefix = formatKey([KeyPrefix.PRESENCE, nspRoomId]);
+  logger.debug(`Removing active member ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
+
+  const removeActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
+  const shiftActivememberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.INDEX]);
+  const clientPresenceKey = formatKey([
+    KeyPrefix.CLIENT,
+    session.appPid,
+    clientId,
+    KeyNameSpace.PRESENCE
+  ]);
 
   try {
-    await repository.removeActiveMember(redisClient, `${keyPrefix}:${KeySuffix.MEMBERS}`, clientId);
-    await repository.shiftActiveMember(redisClient, `${keyPrefix}:${KeySuffix.INDEX}`, clientId);
+    await repository.removeActiveMember(redisClient, removeActiveMemberKey, clientId);
+    await repository.shiftActiveMember(redisClient, shiftActivememberKey, clientId);
+    await repository.unsetClientPresenceActive(redisClient, clientPresenceKey, nspRoomId);
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
   } catch (err) {
@@ -63,6 +83,8 @@ export async function updateActiveMember(
   data: any
 ): Promise<void> {
   const { clientId, nspRoomId, subscription, session, message, latencyLog } = data;
+
+  logger.debug(`Updating active member ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
 
   const key = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
 

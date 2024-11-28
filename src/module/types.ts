@@ -1,4 +1,9 @@
 export enum KeyPrefix {
+  PRESENCE = 'presence',
+  CLIENT = 'client'
+}
+
+export enum KeyNameSpace {
   PRESENCE = 'presence'
 }
 
