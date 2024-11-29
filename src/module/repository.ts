@@ -3,44 +3,44 @@ import { RedisClient } from '@/lib/redis';
 export async function addActiveMember(
   redisClient: RedisClient,
   key: string,
-  clientId: string,
+  connectionId: string,
   data: any
 ): Promise<void> {
-  await redisClient.hSet(key, clientId, data);
+  await redisClient.hSet(key, connectionId, data);
 }
 
 export async function pushActiveMember(
   redisClient: RedisClient,
   key: string,
-  clientId: string
+  connectionId: string
 ): Promise<void> {
-  await redisClient.lRem(key, 0, clientId);
-  await redisClient.lPush(key, clientId);
+  await redisClient.lRem(key, 0, connectionId);
+  await redisClient.lPush(key, connectionId);
 }
 
 export async function removeActiveMember(
   redisClient: RedisClient,
   key: string,
-  clientId: string
+  connectionId: string
 ): Promise<void> {
-  await redisClient.hDel(key, clientId);
+  await redisClient.hDel(key, connectionId);
 }
 
 export async function shiftActiveMember(
   redisClient: RedisClient,
   key: string,
-  clientId: string
+  connectionId: string
 ): Promise<void> {
-  await redisClient.lRem(key, 0, clientId);
+  await redisClient.lRem(key, 0, connectionId);
 }
 
 export async function updateActiveMember(
   redisClient: RedisClient,
   key: string,
-  clientId: string,
+  connectionId: string,
   data: any
 ): Promise<void> {
-  await redisClient.hSet(key, clientId, data);
+  await redisClient.hSet(key, connectionId, data);
 }
 
 export function setClientPresenceActive(

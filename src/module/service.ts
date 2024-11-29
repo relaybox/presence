@@ -15,7 +15,7 @@ export async function addActiveMember(
 ): Promise<void> {
   const { clientId, nspRoomId, subscription, session, message, latencyLog } = data;
 
-  const { appPid, connectionId } = session;
+  const { connectionId } = session;
 
   logger.debug(`Adding active member, ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
 
@@ -37,10 +37,10 @@ export async function addActiveMember(
     await repository.addActiveMember(
       redisClient,
       addActiveMemberKey,
-      clientId,
+      connectionId,
       JSON.stringify(messageData)
     );
-    await repository.pushActiveMember(redisClient, pushActiveMemberKey, clientId);
+    await repository.pushActiveMember(redisClient, pushActiveMemberKey, connectionId);
     await repository.setConnectionActive(redisClient, connectionActiveKey, nspRoomId);
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
@@ -69,8 +69,8 @@ export async function removeActiveMember(
   ]);
 
   try {
-    await repository.removeActiveMember(redisClient, removeActiveMemberKey, clientId);
-    await repository.shiftActiveMember(redisClient, shiftActivememberKey, clientId);
+    await repository.removeActiveMember(redisClient, removeActiveMemberKey, connectionId);
+    await repository.shiftActiveMember(redisClient, shiftActivememberKey, connectionId);
     await repository.setConnectionInactive(redisClient, connectionActiveKey, nspRoomId);
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
@@ -86,6 +86,8 @@ export async function updateActiveMember(
 ): Promise<void> {
   const { clientId, nspRoomId, subscription, session, message, latencyLog } = data;
 
+  const { connectionId } = session;
+
   logger.debug(`Updating active member ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
 
   const key = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
@@ -97,7 +99,12 @@ export async function updateActiveMember(
       connectionId: session.connectionId
     };
 
-    await repository.updateActiveMember(redisClient, key, clientId, JSON.stringify(messageData));
+    await repository.updateActiveMember(
+      redisClient,
+      key,
+      connectionId,
+      JSON.stringify(messageData)
+    );
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
   } catch (err) {
