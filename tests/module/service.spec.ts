@@ -19,7 +19,9 @@ const mockRepository = vi.hoisted(() => ({
   shiftActiveMember: vi.fn(),
   updateActiveMember: vi.fn(),
   setClientPresenceActive: vi.fn(),
-  unsetClientPresenceActive: vi.fn()
+  unsetClientPresenceActive: vi.fn(),
+  setActiveConnection: vi.fn(),
+  unsetActiveConnection: vi.fn()
 }));
 
 vi.mock('@/module/repository', () => mockRepository);
@@ -41,13 +43,16 @@ describe('service', () => {
     it('should add active member to presence set by nspRoomId', async () => {
       const messageData = getMockMessageData();
 
-      const { clientId, nspRoomId, subscription, session, message, latencyLog } = messageData;
+      const { nspRoomId, subscription, session, message, latencyLog } = messageData;
+
+      const { connectionId } = session;
 
       const addActiveMemberCacheKeyPrefix = formatKey([KeyPrefix.PRESENCE, messageData.nspRoomId]);
 
       const messageUserData = {
         ...message,
-        user: session.user
+        user: session.user,
+        connectionId
       };
 
       await addActiveMember(logger, mockRedisClient, messageData);
@@ -55,13 +60,13 @@ describe('service', () => {
       expect(mockRepository.addActiveMember).toHaveBeenCalledWith(
         mockRedisClient,
         `${addActiveMemberCacheKeyPrefix}:${KeySuffix.MEMBERS}`,
-        clientId,
+        connectionId,
         JSON.stringify(messageUserData)
       );
       expect(mockRepository.pushActiveMember).toHaveBeenCalledWith(
         mockRedisClient,
         `${addActiveMemberCacheKeyPrefix}:${KeySuffix.INDEX}`,
-        clientId
+        connectionId
       );
       expect(mockPublisher.dispatch).toHaveBeenCalledWith(
         nspRoomId,
@@ -77,7 +82,9 @@ describe('service', () => {
     it('should remove active member from presence set by nspRoomId', async () => {
       const messageData = getMockMessageData();
 
-      const { clientId, nspRoomId, subscription, session, message, latencyLog } = messageData;
+      const { nspRoomId, subscription, session, message, latencyLog } = messageData;
+
+      const { connectionId } = session;
 
       const addActiveMemberCacheKeyPrefix = formatKey([KeyPrefix.PRESENCE, messageData.nspRoomId]);
 
@@ -86,12 +93,12 @@ describe('service', () => {
       expect(mockRepository.removeActiveMember).toHaveBeenCalledWith(
         mockRedisClient,
         `${addActiveMemberCacheKeyPrefix}:${KeySuffix.MEMBERS}`,
-        clientId
+        connectionId
       );
       expect(mockRepository.shiftActiveMember).toHaveBeenCalledWith(
         mockRedisClient,
         `${addActiveMemberCacheKeyPrefix}:${KeySuffix.INDEX}`,
-        clientId
+        connectionId
       );
       expect(mockPublisher.dispatch).toHaveBeenCalledWith(
         nspRoomId,
@@ -107,13 +114,16 @@ describe('service', () => {
     it('should update active member presence data by nspRoomId', async () => {
       const messageData = getMockMessageData();
 
-      const { clientId, nspRoomId, subscription, session, message, latencyLog } = messageData;
+      const { nspRoomId, subscription, session, message, latencyLog } = messageData;
+
+      const { connectionId } = session;
 
       const addActiveMemberCacheKeyPrefix = formatKey([KeyPrefix.PRESENCE, messageData.nspRoomId]);
 
       const messageUserData = {
         ...message,
-        user: session.user
+        user: session.user,
+        connectionId
       };
 
       await updateActiveMember(logger, mockRedisClient, messageData);
@@ -121,7 +131,7 @@ describe('service', () => {
       expect(mockRepository.updateActiveMember).toHaveBeenCalledWith(
         mockRedisClient,
         `${addActiveMemberCacheKeyPrefix}:${KeySuffix.MEMBERS}`,
-        clientId,
+        connectionId,
         JSON.stringify(messageUserData)
       );
 

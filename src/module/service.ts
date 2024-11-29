@@ -1,7 +1,7 @@
 import { Logger } from 'winston';
 import { dispatch } from '@/lib/publisher';
 import * as repository from './repository';
-import { KeyNameSpace, KeyPrefix, KeySuffix } from './types';
+import { KeyPrefix, KeySuffix } from './types';
 import { RedisClient } from '@/lib/redis';
 
 export function formatKey(keyParts: string[]): string {
@@ -15,32 +15,33 @@ export async function addActiveMember(
 ): Promise<void> {
   const { clientId, nspRoomId, subscription, session, message, latencyLog } = data;
 
+  const { connectionId } = session;
+
   logger.debug(`Adding active member, ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
 
   const addActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
   const pushActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.INDEX]);
-  const clientPresenceKey = formatKey([
-    KeyPrefix.CLIENT,
-    session.appPid,
-    clientId,
-    KeyNameSpace.PRESENCE
+  const setActiveConnectionKey = formatKey([
+    KeyPrefix.CONNECTION,
+    connectionId,
+    KeySuffix.PRESENCE_SETS
   ]);
 
   const messageData = {
     ...message,
-    user: session.user
+    user: session.user,
+    connectionId: session.connectionId
   };
 
   try {
     await repository.addActiveMember(
       redisClient,
       addActiveMemberKey,
-      clientId,
+      connectionId,
       JSON.stringify(messageData)
     );
-
-    await repository.pushActiveMember(redisClient, pushActiveMemberKey, clientId);
-    await repository.setClientPresenceActive(redisClient, clientPresenceKey, nspRoomId);
+    await repository.pushActiveMember(redisClient, pushActiveMemberKey, connectionId);
+    await repository.setActiveConnection(redisClient, setActiveConnectionKey, nspRoomId);
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
   } catch (err: any) {
@@ -55,21 +56,22 @@ export async function removeActiveMember(
 ): Promise<void> {
   const { clientId, nspRoomId, subscription, session, message, latencyLog } = data;
 
+  const { connectionId } = session;
+
   logger.debug(`Removing active member ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
 
   const removeActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
   const shiftActivememberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.INDEX]);
-  const clientPresenceKey = formatKey([
-    KeyPrefix.CLIENT,
-    session.appPid,
-    clientId,
-    KeyNameSpace.PRESENCE
+  const unsetActiveConnectionKey = formatKey([
+    KeyPrefix.CONNECTION,
+    connectionId,
+    KeySuffix.PRESENCE_SETS
   ]);
 
   try {
-    await repository.removeActiveMember(redisClient, removeActiveMemberKey, clientId);
-    await repository.shiftActiveMember(redisClient, shiftActivememberKey, clientId);
-    await repository.unsetClientPresenceActive(redisClient, clientPresenceKey, nspRoomId);
+    await repository.removeActiveMember(redisClient, removeActiveMemberKey, connectionId);
+    await repository.shiftActiveMember(redisClient, shiftActivememberKey, connectionId);
+    await repository.unsetActiveConnection(redisClient, unsetActiveConnectionKey, nspRoomId);
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
   } catch (err) {
@@ -84,6 +86,8 @@ export async function updateActiveMember(
 ): Promise<void> {
   const { clientId, nspRoomId, subscription, session, message, latencyLog } = data;
 
+  const { connectionId } = session;
+
   logger.debug(`Updating active member ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
 
   const key = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
@@ -91,10 +95,16 @@ export async function updateActiveMember(
   try {
     const messageData = {
       ...message,
-      user: session.user
+      user: session.user,
+      connectionId: session.connectionId
     };
 
-    await repository.updateActiveMember(redisClient, key, clientId, JSON.stringify(messageData));
+    await repository.updateActiveMember(
+      redisClient,
+      key,
+      connectionId,
+      JSON.stringify(messageData)
+    );
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
   } catch (err) {

@@ -4,18 +4,21 @@ interface MockMessageDataOptions {
   clientId?: string;
   nspRoomId?: string;
   subscription?: string;
+  connectionId?: string;
 }
 
 export function getMockMessageData({
   clientId,
   nspRoomId,
-  subscription
+  subscription,
+  connectionId
 }: MockMessageDataOptions = {}): any {
   clientId = clientId || '12345';
   nspRoomId = nspRoomId || 'test:123';
   subscription = subscription || 'test';
+  connectionId = connectionId || 'connection:12345';
 
-  const session = getMockSession({ clientId }, { clientId });
+  const session = getMockSession({ clientId, connectionId }, { clientId });
   const now = new Date().toISOString();
   const latencyLog = {
     createdAt: now,
@@ -27,6 +30,7 @@ export function getMockMessageData({
 
   return {
     clientId,
+    connectionId,
     nspRoomId,
     subscription,
     session,
