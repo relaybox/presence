@@ -21,7 +21,7 @@ export async function addActiveMember(
 
   const addActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
   const pushActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.INDEX]);
-  const connectionActiveKey = formatKey([
+  const setActiveConnectionKey = formatKey([
     KeyPrefix.CONNECTION,
     connectionId,
     KeySuffix.PRESENCE_SETS
@@ -41,7 +41,7 @@ export async function addActiveMember(
       JSON.stringify(messageData)
     );
     await repository.pushActiveMember(redisClient, pushActiveMemberKey, connectionId);
-    await repository.setConnectionActive(redisClient, connectionActiveKey, nspRoomId);
+    await repository.setActiveConnection(redisClient, setActiveConnectionKey, nspRoomId);
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
   } catch (err: any) {
@@ -62,7 +62,7 @@ export async function removeActiveMember(
 
   const removeActiveMemberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.MEMBERS]);
   const shiftActivememberKey = formatKey([KeyPrefix.PRESENCE, nspRoomId, KeySuffix.INDEX]);
-  const connectionActiveKey = formatKey([
+  const unsetActiveConnectionKey = formatKey([
     KeyPrefix.CONNECTION,
     connectionId,
     KeySuffix.PRESENCE_SETS
@@ -71,7 +71,7 @@ export async function removeActiveMember(
   try {
     await repository.removeActiveMember(redisClient, removeActiveMemberKey, connectionId);
     await repository.shiftActiveMember(redisClient, shiftActivememberKey, connectionId);
-    await repository.setConnectionInactive(redisClient, connectionActiveKey, nspRoomId);
+    await repository.unsetActiveConnection(redisClient, unsetActiveConnectionKey, nspRoomId);
 
     dispatch(nspRoomId, subscription, message, session, latencyLog);
   } catch (err) {

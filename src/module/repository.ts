@@ -59,7 +59,7 @@ export function unsetClientPresenceActive(
   return redisClient.hDel(key, nspRoomId);
 }
 
-export function setConnectionActive(
+export function setActiveConnection(
   redisClient: RedisClient,
   key: string,
   nspRoomId: string
@@ -67,7 +67,7 @@ export function setConnectionActive(
   return redisClient.hSet(key, nspRoomId, 1);
 }
 
-export function setConnectionInactive(
+export function unsetActiveConnection(
   redisClient: RedisClient,
   key: string,
   nspRoomId: string
