@@ -15,7 +15,7 @@ export async function addActiveMember(
 ): Promise<void> {
   const { clientId, nspRoomId, subscription, session, message, latencyLog } = data;
 
-  const { connectionId } = session;
+  const { connectionId, user } = session;
 
   logger.debug(`Adding active member, ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
 
@@ -29,8 +29,8 @@ export async function addActiveMember(
 
   const messageData = {
     ...message,
-    user: session.user,
-    connectionId: session.connectionId
+    user,
+    connectionId
   };
 
   try {
@@ -86,7 +86,7 @@ export async function updateActiveMember(
 ): Promise<void> {
   const { clientId, nspRoomId, subscription, session, message, latencyLog } = data;
 
-  const { connectionId } = session;
+  const { connectionId, user } = session;
 
   logger.debug(`Updating active member ${clientId}, ${nspRoomId}`, { clientId, nspRoomId });
 
@@ -95,8 +95,8 @@ export async function updateActiveMember(
   try {
     const messageData = {
       ...message,
-      user: session.user,
-      connectionId: session.connectionId
+      user,
+      connectionId
     };
 
     await repository.updateActiveMember(
